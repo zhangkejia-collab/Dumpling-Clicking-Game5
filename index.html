@@ -62,7 +62,7 @@
         .score-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .score-icon { font-size: 44px; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2)); }
         .score-num {
-            font-family: 'VT323', monospace; /* 使用像素字體 */
+            font-family: 'VT323', monospace; 
             font-size: 36px; color: var(--white);
             text-shadow: 0 3px 0 #000;
             line-height: 1;
@@ -352,23 +352,32 @@ let currentLevel  = 0;
 let currentQIndex = 0;
 let currentSection = 0;
 
-// 新增遊戲變數
 let playerHP = 3;
 let currentCombo = 0;
 let applesCollected = 0;
 
-const screens = {
-    map: document.getElementById('map-screen'), intro: document.getElementById('level-intro'),
-    quiz: document.getElementById('quiz-screen'), passage: document.getElementById('passage-screen'),
-    clear: document.getElementById('level-clear'), end: document.getElementById('end-screen')
-};
-
-function showOnly(id) {
-    Object.values(screens).forEach(s => s.style.display = 'none');
-    const el = screens[id];
-    el.style.display = 'flex';
-    el.style.flexDirection = 'column';
-    if (id === 'passage') el.scrollTop = 0;
+// 動態抓取畫面，避免網頁載入時序問題導致報錯
+function showOnly(targetId) {
+    const screenIds = ['map-screen', 'level-intro', 'quiz-screen', 'passage-screen', 'level-clear', 'end-screen'];
+    screenIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    
+    const targetMap = {
+        'map': 'map-screen',
+        'intro': 'level-intro',
+        'quiz': 'quiz-screen',
+        'passage': 'passage-screen',
+        'clear': 'level-clear',
+        'end': 'end-screen'
+    };
+    const currentEl = document.getElementById(targetMap[targetId]);
+    if (currentEl) {
+        currentEl.style.display = 'flex';
+        currentEl.style.flexDirection = 'column';
+        if (targetId === 'passage') currentEl.scrollTop = 0;
+    }
 }
 
 function renderMap() {
@@ -538,7 +547,6 @@ function showLevelClear(isSuccess) {
     document.getElementById('clear-title').classList.remove('game-over-title');
     document.getElementById('clear-emoji').textContent = isLast ? '🏆' : '🎉';
     
-    // 依據剩餘血量給星星
     let stars = '⭐⭐⭐';
     if(currentLevel === 0) {
         if(playerHP === 2) stars = '⭐⭐';
@@ -559,7 +567,11 @@ function showLevelClear(isSuccess) {
 function goNextLevel() { if (currentLevel===1){showOnly('end');return;} currentLevel++; startLevelIntro(currentLevel); }
 function goToMap() { renderMap(); }
 function resetAll() { levelProgress=[true,false]; levelCleared=[false,false]; applesCollected=0; renderMap(); }
-window.onload = () => renderMap();
+
+// 確保網頁完全讀取後再綁定地圖，防止發生錯誤
+document.addEventListener('DOMContentLoaded', () => {
+    renderMap();
+});
 </script>
 </body>
 </html>
