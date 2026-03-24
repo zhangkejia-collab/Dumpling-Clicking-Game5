@@ -8,11 +8,21 @@
     <style>
         :root {
             --sky: #5BB8F5;
-            --grass: #5CA846; --grass-check: #52993E;
-            --btn-blue: #1A73E8; --btn-blue-dark: #1557B0; --btn-blue-shadow: rgba(26,115,232,0.35);
-            --white: #FFFFFF; --dark: #2D2D2D; --gray: #888;
-            --yellow: #FFD93D; --orange: #FF9500;
+            --sky-dark: #4AA3E0;
+            --grass: #5CA846;
+            --grass-dark: #4A9035;
+            --grass-check: #52993E;
+            --snake-blue: #5C6BC0;
+            --snake-dark: #3949AB;
+            --btn-blue: #1A73E8;
+            --btn-blue-dark: #1557B0;
+            --btn-blue-shadow: rgba(26,115,232,0.35);
+            --white: #FFFFFF;
+            --dark: #2D2D2D;
+            --gray: #888;
+            --yellow: #FFD93D; --yellow-dark: #C89B00; --orange: #FF9500;
             --red-ch: #D93025; --green: #34A853; --red-wrong: #EA4335;
+            --shadow: rgba(0,0,0,0.12);
             --lv1-color: #1A73E8; --lv2-color: #6B4FBB; --lv3-color: #FF9500;
         }
 
@@ -67,20 +77,20 @@
 
         .levels-section { width: 100%; padding: 20px 18px 40px; display: flex; flex-direction: column; gap: 14px; position: relative; z-index: 2; }
         .level-btn {
-            width: 100%; background: var(--btn-blue); border: none; border-radius: 14px;
+            width: 100%; border: none; border-radius: 14px;
             padding: 18px 22px; display: flex; align-items: center; gap: 16px; cursor: pointer;
-            box-shadow: 0 4px 0 var(--btn-blue-dark), 0 6px 16px var(--btn-blue-shadow);
-            transition: transform 0.12s, box-shadow 0.12s; position: relative; overflow: hidden;
-            flex-shrink: 0;
+            transition: transform 0.12s, box-shadow 0.12s; position: relative; overflow: hidden; flex-shrink: 0;
         }
-        .level-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--btn-blue-dark), 0 2px 8px var(--btn-blue-shadow); }
-        .level-btn.locked { background: #78909C !important; box-shadow: 0 4px 0 #546E7A !important; cursor: not-allowed; }
+        .level-btn:active { transform: translateY(3px); }
+        .level-btn.locked { background: #78909C !important; box-shadow: 0 4px 0 #546E7A, 0 6px 16px rgba(84,110,122,0.35) !important; cursor: not-allowed; }
+        .level-btn.locked:active { transform: none; }
         .level-btn::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%; background: rgba(255,255,255,0.12); border-radius: 14px 14px 0 0; pointer-events: none; }
         .btn-icon { width: 52px; height: 52px; border-radius: 12px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
         .level-btn.locked .btn-icon { background: rgba(255,255,255,0.15); filter: grayscale(0.5); }
         .btn-text { flex: 1; text-align: left; }
-        .btn-label { font-size: 11px; font-weight: 900; color: rgba(255,255,255,0.75); letter-spacing: 2px; }
+        .btn-label { font-size: 11px; font-weight: 900; color: rgba(255,255,255,0.75); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 3px; }
         .btn-title { font-size: 20px; font-weight: 900; color: var(--white); }
+        .level-btn.locked .btn-title { color: rgba(255,255,255,0.7); }
         .btn-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
         .btn-stars { font-size: 14px; letter-spacing: 2px; }
         .lock-badge { font-size: 22px; opacity: 0.8; }
@@ -93,8 +103,8 @@
         /* ════ COMMON SCREENS ════ */
         #level-intro, #quiz-screen, #passage-screen, #memory-screen, #level-clear, #end-screen { background: #FFFBEA; }
         #level-intro { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; padding: 40px 30px; text-align: center; gap: 18px; }
-        .intro-badge { font-size: 13px; font-weight: 900; letter-spacing: 3px; padding: 6px 20px; border-radius: 99px; color: white; }
-        .intro-emoji { font-size: 90px; animation: pop 0.5s cubic-bezier(.36,1.6,.6,1); }
+        .intro-badge { font-size: 13px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; padding: 6px 20px; border-radius: 99px; color: white; }
+        .intro-emoji { font-size: 90px; animation: pop 0.5s cubic-bezier(.36,1.6,.6,1); display: flex; align-items: center; justify-content: center; }
         @keyframes pop { from{transform:scale(0.3);opacity:0} to{transform:scale(1);opacity:1} }
         .intro-title { font-size: 32px; font-weight: 900; color: var(--dark); }
         .intro-desc { font-size: 17px; font-weight: 700; color: var(--gray); line-height: 1.6; }
@@ -104,59 +114,10 @@
 
         /* HEADER COMMON */
         .game-header { padding: 12px 20px 8px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; background: #FFFBEA; z-index: 10; }
-        .back-btn { width: 36px; height: 36px; border-radius: 10px; border: none; cursor: pointer; font-size: 18px; font-weight: 900; flex-shrink:0; }
+        .back-btn { width: 36px; height: 36px; border-radius: 10px; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; }
         .header-wrap { flex: 1; display: flex; flex-direction: column; gap: 5px; }
 
-        /* ════ QUIZ SCREEN (LV2) ════ */
-        #quiz-screen { display: none; flex-direction: column; flex: 1; position: relative; overflow-y: auto; }
-        .progress-label { font-size: 13px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
-        .hp-display { font-size: 14px; letter-spacing: 2px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1)); }
-        .progress-track { height: 10px; border-radius: 99px; background: rgba(0,0,0,0.08); }
-        .progress-fill { height: 100%; border-radius: 99px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
-        .combo-text { position: absolute; top: 180px; left: 50%; transform: translate(-50%, -50%); font-family: 'VT323', monospace; font-size: 48px; color: #FF9500; text-shadow: 0 4px 0 #C84B31, 2px 2px 0 #FFF, -2px -2px 0 #FFF; opacity: 0; pointer-events: none; z-index: 10; }
-        .combo-text.show { animation: comboPop 0.8s ease-out; }
-        @keyframes comboPop { 0% { transform: translate(-50%, -20%) scale(0.5); opacity: 0; } 20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 80% { transform: translate(-50%, -55%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -60%) scale(0.8); opacity: 0; } }
-        .illustration-area { display: flex; justify-content: center; padding: 8px 0 4px; }
-        .illustration-box { font-size: 62px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-        .cards-area { padding: 0 18px; display: flex; flex-direction: column; gap: 12px; }
-        .card-question { background: white; border-radius: 20px; padding: 18px 20px; font-size: 24px; font-weight: 900; color: var(--dark); text-align: center; line-height: 1.8; box-shadow: 0 4px 0 #E0E0E0; border: 2.5px solid; min-height: 72px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; }
-        .blank-underline { display: inline-block; min-width: 52px; border-bottom: 3px solid var(--red-ch); margin: 0 3px; vertical-align: bottom; padding: 0 5px; color: var(--red-ch); transition: 0.3s; }
-        .blank-underline.filled { color: var(--green); border-bottom-color: var(--green); }
-        .card-pinyin { background: rgba(255,255,255,0.75); border: 2px dashed #ddd; border-radius: 14px; padding: 9px 18px; font-size: 14px; color: var(--gray); text-align: center; font-style: italic; font-weight: 700; }
-        .options-area { padding: 10px 18px 24px; display: grid; gap: 11px; grid-template-columns: 1fr 1fr; }
-        .option-btn { background: white; border: 2.5px solid #E0E0E0; border-bottom-width: 6px; border-radius: 16px; padding: 13px 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.1s; user-select: none; }
-        .option-btn:active { transform: translateY(4px); border-bottom-width: 2.5px; }
-        .option-hanzi { font-size: 26px; font-weight: 900; color: var(--dark); }
-        .option-pinyin { font-size: 13px; color: var(--gray); font-weight: 700; }
-        .option-btn.correct { border-color: var(--green); background: #E8F8EE; }
-        .option-btn.correct .option-hanzi { color: var(--green); }
-        .option-btn.wrong { border-color: var(--red-wrong); background: #FFE8E6; animation: shake 0.3s; }
-        .option-btn.wrong .option-hanzi { color: var(--red-wrong); }
-        .option-btn.disabled { pointer-events: none; }
-        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
-
-        /* ════ PASSAGE SCREEN (LV3) ════ */
-        #passage-screen { display: none; flex-direction: column; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-        .passage-body { padding: 16px 18px 32px; display: flex; flex-direction: column; gap: 16px; }
-        .section-label { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 900; letter-spacing: 2px; color: var(--lv2-color); text-transform: uppercase; }
-        .section-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lv2-color); }
-        .passage-card { background: white; border-radius: 18px; border: 2.5px solid var(--lv2-color); padding: 18px; line-height: 2.1; font-size: 17px; font-weight: 700; color: var(--dark); box-shadow: 0 4px 0 rgba(107,79,187,0.2); }
-        .questions-block { display: flex; flex-direction: column; gap: 14px; }
-        .question-item { background: white; border-radius: 16px; border: 2px solid #DDD8F5; padding: 14px 16px; box-shadow: 0 4px 0 #EAE6FA; }
-        .question-num-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
-        .q-num { width: 28px; height: 28px; border-radius: 50%; background: var(--lv2-color); color: white; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
-        .q-text { font-size: 16px; font-weight: 800; color: var(--dark); line-height: 1.5; flex: 1; }
-        .answer-input { width: 100%; border: 2.5px solid #D0C8F0; border-radius: 12px; padding: 12px 14px; font-size: 16px; font-family: inherit; font-weight: 700; background: #FAF8FF; resize: none; min-height: 72px; line-height: 1.6; }
-        .answer-input:focus { outline: none; border-color: var(--lv2-color); background: white; }
-        .ref-answer { margin-top: 10px; padding: 10px 14px; background: #EDE8FF; border-radius: 10px; font-size: 14px; font-weight: 700; color: #5A3F9B; display: none; line-height: 1.6; }
-        .ref-answer.show { display: block; animation: pop 0.3s; }
-        .submit-section-btn { width: 100%; padding: 15px; font-size: 18px; font-weight: 900; border: none; border-radius: 16px; background: var(--lv2-color); color: white; box-shadow: 0 6px 0 #503A8A; cursor: pointer; transition: 0.1s; }
-        .submit-section-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #503A8A; }
-        .next-section-btn { width: 100%; padding: 15px; font-size: 18px; font-weight: 900; border: none; border-radius: 16px; background: var(--green); color: white; box-shadow: 0 6px 0 #24823E; cursor: pointer; display: none; transition: 0.1s; }
-        .next-section-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #24823E; }
-
-        /* ════ MEMORY SCREEN (LV1) ════ */
+        /* ════ MEMORY SCREEN (STAGE 1) ════ */
         #memory-screen { display: none; flex-direction: column; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .m-progress-label { font-size: 16px; font-weight: 900; color: var(--lv3-color); display: flex; justify-content: space-between; }
         .m-moves { font-family: 'VT323', monospace; font-size: 24px; color: var(--dark); }
@@ -169,60 +130,109 @@
         .memory-card-back { background: white; transform: rotateY(180deg); border: 3px solid #E0E0E0; border-bottom-width: 5px; flex-direction: column; }
         .memory-card.matched .memory-card-back { border-color: var(--green); background: #E8F8EE; box-shadow: 0 0 15px rgba(52,168,83,0.4); }
         .m-text { font-size: 24px; font-weight: 900; color: var(--dark); }
-        .m-emoji { font-size: 42px; }
+        .m-emoji { font-size: 42px; display: flex; align-items: center; justify-content: center; }
+
+        /* ════ QUIZ SCREEN (STAGE 2) ════ */
+        #quiz-screen { display: none; flex-direction: column; flex: 1; position: relative; overflow-y: auto; }
+        .progress-label { font-size: 13px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
+        .hp-display { font-size: 14px; letter-spacing: 2px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1)); }
+        .progress-track { height: 10px; border-radius: 99px; overflow: hidden; background: rgba(0,0,0,0.08); }
+        .progress-fill { height: 100%; border-radius: 99px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+        .combo-text { position: absolute; top: 180px; left: 50%; transform: translate(-50%, -50%); font-family: 'VT323', monospace; font-size: 48px; color: #FF9500; text-shadow: 0 4px 0 #C84B31, 2px 2px 0 #FFF, -2px -2px 0 #FFF; opacity: 0; pointer-events: none; z-index: 10; }
+        .combo-text.show { animation: comboPop 0.8s ease-out; }
+        @keyframes comboPop { 0% { transform: translate(-50%, -20%) scale(0.5); opacity: 0; } 20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 80% { transform: translate(-50%, -55%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -60%) scale(0.8); opacity: 0; } }
+        .illustration-area { display: flex; justify-content: center; padding: 8px 0 4px; }
+        .illustration-box { font-size: 62px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); animation: float 3s ease-in-out infinite; display: flex; align-items: center; justify-content: center;}
+        
+        .cards-area { padding: 0 18px; display: flex; flex-direction: column; gap: 12px; }
+        .card-question { background: white; border-radius: 20px; padding: 18px 20px; font-size: 24px; font-weight: 900; color: var(--red-ch); text-align: center; line-height: 1.8; box-shadow: 0 4px 16px rgba(200,155,0,0.15); border: 2.5px solid; min-height: 72px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; }
+        .blank-underline { display: inline-block; min-width: 52px; border-bottom: 3px solid var(--red-ch); margin: 0 3px; vertical-align: bottom; padding: 0 5px; color: var(--red-ch); transition: color 0.3s, border-color 0.3s; }
+        .blank-underline.filled { color: var(--green); border-bottom-color: var(--green); }
+        .card-pinyin { background: rgba(255,255,255,0.75); border: 2px dashed #ddd; border-radius: 14px; padding: 9px 18px; font-size: 14px; color: var(--gray); text-align: center; font-style: italic; font-weight: 700; }
+
+        .options-area { padding: 10px 18px 24px; display: grid; gap: 11px; grid-template-columns: 1fr 1fr; }
+        .option-btn { background: white; border: 2.5px solid #E0E0E0; border-radius: 16px; padding: 13px 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 3px 10px rgba(0,0,0,0.06); transition: transform 0.14s, border-color 0.2s, background 0.2s; -webkit-user-select: none; user-select: none; }
+        .option-btn:active { transform: scale(0.96); }
+        .option-hanzi { font-size: 26px; font-weight: 900; color: var(--dark); }
+        .option-pinyin { font-size: 13px; color: var(--gray); font-weight: 700; }
+        .option-btn.correct { border-color: var(--green); background: #E8F8EE; transform: scale(1.03); }
+        .option-btn.correct .option-hanzi { color: var(--green); }
+        .option-btn.wrong { border-color: var(--red-wrong); background: #FFE8E6; opacity: 0.58; pointer-events: none; animation: shake 0.35s; }
+        .option-btn.wrong .option-hanzi { color: var(--red-wrong); }
+        .option-btn.disabled { pointer-events: none; }
+        @keyframes shake { 0%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(4px)} 100%{transform:translateX(0)} }
+
+        /* ════ PASSAGE SCREEN (STAGE 3) ════ */
+        #passage-screen { display: none; flex-direction: column; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .passage-body { padding: 16px 18px 32px; display: flex; flex-direction: column; gap: 16px; }
+        .section-label { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 900; letter-spacing: 2px; color: var(--lv2-color); text-transform: uppercase; }
+        .section-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lv2-color); flex-shrink: 0; }
+        .passage-card { background: white; border-radius: 18px; border: 2.5px solid var(--lv2-color); padding: 18px; line-height: 2.1; font-size: 17px; font-weight: 700; color: var(--dark); box-shadow: 0 4px 16px rgba(107,79,187,0.1); }
+        .questions-block { display: flex; flex-direction: column; gap: 14px; }
+        .question-item { background: white; border-radius: 16px; border: 2px solid #DDD8F5; padding: 14px 16px; box-shadow: 0 3px 10px rgba(107,79,187,0.07); }
+        .question-num-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+        .q-num { width: 28px; height: 28px; border-radius: 50%; background: var(--lv2-color); color: white; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .q-text { font-size: 16px; font-weight: 800; color: var(--dark); line-height: 1.5; flex: 1; }
+        .answer-input { width: 100%; border: 2.5px solid #D0C8F0; border-radius: 12px; padding: 12px 14px; font-size: 16px; font-family: inherit; font-weight: 700; color: var(--dark); background: #FAF8FF; resize: none; transition: border-color 0.2s, background 0.2s; min-height: 72px; line-height: 1.6; -webkit-appearance: none; }
+        .answer-input:focus { outline: none; border-color: var(--lv2-color); background: white; }
+        .answer-input.answered { border-color: var(--lv2-color); background: #F2EEFF; }
+        .ref-answer { margin-top: 10px; padding: 10px 14px; background: #EDE8FF; border-radius: 10px; font-size: 14px; font-weight: 700; color: #5A3F9B; line-height: 1.7; display: none; }
+        .ref-answer.show { display: block; }
+        .ref-label { font-size: 11px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: #9B7FEB; margin-bottom: 5px; }
+        .submit-section-btn { width: 100%; padding: 15px; font-size: 18px; font-weight: 900; font-family: inherit; border: none; border-radius: 16px; background: linear-gradient(135deg, var(--lv2-color), #9B7FEB); color: white; cursor: pointer; box-shadow: 0 4px 14px rgba(107,79,187,0.35); transition: transform 0.15s; }
+        .submit-section-btn:active { transform: scale(0.97); }
+        .next-section-btn { width: 100%; padding: 15px; font-size: 18px; font-weight: 900; font-family: inherit; border: none; border-radius: 16px; background: linear-gradient(135deg, var(--green), #5DC86A); color: white; cursor: pointer; box-shadow: 0 4px 14px rgba(52,168,83,0.3); transition: transform 0.15s; display: none; }
+        .next-section-btn:active { transform: scale(0.97); }
 
         /* ════ CLEAR / END SCREENS ════ */
-        #level-clear, #end-screen { display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 40px 28px; text-align: center; gap: 14px; overflow-y: auto; }
+        #level-clear { display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 40px 28px; text-align: center; gap: 14px; overflow-y: auto; }
         .clear-emoji { font-size: 80px; animation: pop 0.5s cubic-bezier(.36,1.6,.6,1); }
         .clear-stars { font-size: 42px; letter-spacing: 6px; animation: pop 0.6s 0.1s both cubic-bezier(.36,1.6,.6,1); }
         .clear-title { font-size: 28px; font-weight: 900; color: var(--dark); }
         .clear-sub { font-size: 16px; font-weight: 700; color: var(--gray); line-height: 1.6; }
         .clear-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 8px; }
-        .btn-next, .btn-map { padding: 15px; font-size: 18px; font-weight: 900; border: none; border-radius: 16px; cursor: pointer; color: white; box-shadow: 0 4px 0 rgba(0,0,0,0.2); transition: 0.1s; }
-        .btn-next:active, .btn-map:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+        .btn-next, .btn-map { padding: 15px; font-size: 18px; font-weight: 900; font-family: inherit; border: none; border-radius: 16px; cursor: pointer; transition: transform 0.15s; color: white; }
+        .btn-next:active, .btn-map:active { transform: scale(0.96); }
         .btn-map { background: #E0E0E0; color: #666; }
         .game-over-title { color: var(--red-wrong) !important; }
 
-        /* Apple Animation */
+        #end-screen { display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 40px 28px; text-align: center; gap: 16px; }
+        .end-emoji { font-size: 90px; animation: bounce 1.2s infinite; }
+        @keyframes bounce { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-14px) scale(1.07)} }
+        #end-screen h1 { font-size: 28px; font-weight: 900; color: var(--dark); }
+        #end-screen p { font-size: 16px; color: var(--gray); font-weight: 700; line-height: 1.8; }
+        #restart-btn { padding: 16px 44px; font-size: 19px; font-weight: 900; font-family: inherit; border: none; border-radius: 50px; background: linear-gradient(135deg, var(--orange), var(--yellow)); color: white; cursor: pointer; box-shadow: 0 6px 20px rgba(255,149,0,0.35); transition: transform 0.15s; }
+        #restart-btn:active { transform: scale(0.96); }
+
         @keyframes floatApple { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes glowApple { 0%,100% { filter: drop-shadow(0 0 4px rgba(229, 57, 53, 0.4)); } 50% { filter: drop-shadow(0 0 12px rgba(229, 57, 53, 0.9)); } }
-    
-        /* 泡菜圖片特定樣式 */
+        
+        /* ════ 自訂泡菜圖片響應式樣式 ════ */
         .paochai-icon-img {
             display: inline-block;
             vertical-align: middle;
             object-fit: contain;
         }
         
-        /* 地圖按鈕內的圖片 */
-        .levels-section .btn-icon img.paochai-icon-img {
-            width: 32px;
-            height: 32px;
-        }
-        
         /* 過場畫面的大圖片 */
-        #level-intro .intro-emoji img.paochai-icon-img {
-            width: 100px;
-            height: 100px;
+        #level-intro .intro-emoji .paochai-icon-img {
+            width: 80px; height: 80px;
         }
         
         /* 生詞填空題目的圖片 */
-        #quiz-screen .illustration-box img.paochai-icon-img {
-            width: 70px;
-            height: 70px;
+        #quiz-screen .illustration-box .paochai-icon-img {
+            width: 60px; height: 60px;
         }
         
         /* 閱讀段落標題的圖片 */
-        .section-label img.paochai-icon-img {
-            width: 20px;
-            height: 20px;
-            margin-right: 2px; /* 調整與文字的間距 */
+        .section-label .paochai-icon-img {
+            width: 16px; height: 16px;
+            margin-right: 4px;
+            transform: translateY(-1px);
         }
         
         /* 記憶翻牌卡片的圖片 */
-        .memory-card .m-emoji img.paochai-icon-img {
-            width: 50px;
-            height: 50px;
+        .memory-card .m-emoji .paochai-icon-img {
+            width: 45px; height: 45px;
         }
     </style>
 </head>
@@ -232,9 +242,16 @@
     <div id="map-screen">
         <div class="scene-card">
             <div class="score-row">
-                <div class="score-item"><div class="score-icon">🍎</div><div class="score-num" id="score-apples">0</div></div>
-                <div class="score-item"><div class="score-icon">🏆</div><div class="score-num" id="score-trophy">0</div></div>
+                <div class="score-item">
+                    <div class="score-icon">🍎</div>
+                    <div class="score-num" id="score-apples">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-icon">🏆</div>
+                    <div class="score-num" id="score-trophy">0</div>
+                </div>
             </div>
+
             <div class="snake-scene">
                 <svg viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
                     <g id="snake-group">
@@ -250,6 +267,7 @@
                         <circle cx="317" cy="72" r="4" fill="#1A237E"/> <circle cx="329" cy="72" r="4" fill="#1A237E"/>
                         <circle cx="318" cy="70" r="1.5" fill="white"/> <circle cx="330" cy="70" r="1.5" fill="white"/>
                         <path d="M 300 86 Q 308 92 318 88" stroke="#3949AB" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        <circle cx="303" cy="83" r="1.5" fill="#3949AB" opacity="0.6"/> <circle cx="308" cy="84" r="1.5" fill="#3949AB" opacity="0.6"/>
                     </g>
                     <g style="animation: floatApple 2.5s ease-in-out infinite;">
                         <circle cx="80" cy="38" r="18" fill="#E53935"/> <circle cx="74" cy="28" r="7" fill="#C62828"/>
@@ -262,23 +280,23 @@
         </div>
         
         <div class="levels-section">
-            <button class="level-btn" id="btn-lv0" onclick="startLevelIntro(0)">
-                <div class="btn-icon">🕹️</div>
-                <div class="btn-text"><div class="btn-label">STAGE 1</div><div class="btn-title">生詞填空</div></div>
+            <button class="level-btn" id="btn-lv0" onclick="startLevelIntro(0)" style="background: linear-gradient(135deg, var(--orange), var(--yellow)); box-shadow: 0 4px 0 var(--yellow-dark), 0 6px 16px rgba(255,149,0,0.35);">
+                <div class="btn-icon" style="background:rgba(255,255,255,0.25);">🃏</div>
+                <div class="btn-text"><div class="btn-label">STAGE 1</div><div class="btn-title">記憶翻牌</div></div>
                 <div class="btn-right"><div class="btn-stars" id="stars-0">⭐⭐⭐</div></div>
             </button>
             <div class="level-connector"><div class="conn-dot"></div><div class="conn-dot"></div><div class="conn-dot"></div></div>
             
-            <button class="level-btn locked" id="btn-lv1" onclick="startLevelIntro(1)">
-                <div class="btn-icon" style="background:rgba(255,255,255,0.25);">📖</div>
-                <div class="btn-text"><div class="btn-label">STAGE 2</div><div class="btn-title">段落問答</div></div>
+            <button class="level-btn locked" id="btn-lv1" onclick="startLevelIntro(1)" style="background: linear-gradient(135deg, var(--btn-blue), #4A9CF8); box-shadow: 0 4px 0 var(--btn-blue-dark), 0 6px 16px rgba(26,115,232,0.35);">
+                <div class="btn-icon" style="background:rgba(255,255,255,0.25);">🕹️</div>
+                <div class="btn-text"><div class="btn-label">STAGE 2</div><div class="btn-title">生詞填空</div></div>
                 <div class="btn-right"><div class="lock-badge" id="lock-badge-1">🔒</div></div>
             </button>
             <div class="level-connector"><div class="conn-dot"></div><div class="conn-dot"></div><div class="conn-dot"></div></div>
 
-            <button class="level-btn locked" id="btn-lv2" onclick="startLevelIntro(2)" style="background:var(--lv3-color); box-shadow: 0 4px 0 #D67200, 0 6px 16px rgba(255,149,0,0.35);">
-                <div class="btn-icon" style="background:rgba(255,255,255,0.25);">🃏</div>
-                <div class="btn-text"><div class="btn-label">STAGE 3</div><div class="btn-title">記憶翻牌</div></div>
+            <button class="level-btn locked" id="btn-lv2" onclick="startLevelIntro(2)" style="background: linear-gradient(135deg, var(--lv2-color), #9B7FEB); box-shadow: 0 4px 0 #503A8A, 0 6px 16px rgba(107,79,187,0.35);">
+                <div class="btn-icon" style="background:rgba(255,255,255,0.25);">📖</div>
+                <div class="btn-text"><div class="btn-label">STAGE 3</div><div class="btn-title">段落問答</div></div>
                 <div class="btn-right"><div class="lock-badge" id="lock-badge-2">🔒</div></div>
             </button>
         </div>
@@ -290,7 +308,22 @@
         <div class="intro-title" id="intro-title"></div>
         <div class="intro-desc" id="intro-desc"></div>
         <div class="intro-tip" id="intro-tip"></div>
-        <button class="start-btn" id="intro-start-btn" onclick="beginLevel()">START 🚀</button>
+        <button class="start-btn" id="intro-start-btn" onclick="beginLevel()">開始挑戰 🚀</button>
+    </div>
+
+    <div id="memory-screen">
+        <div class="game-header" style="border-bottom: 2px solid rgba(255,149,0,0.15);">
+            <button class="back-btn" style="background:#FFECD6;color:#D67200;" onclick="goToMap()">←</button>
+            <div class="header-wrap">
+                <div class="m-progress-label">
+                    <span>尋找食物配對！</span>
+                    <span>步數: <span class="m-moves" id="m-moves-count">0</span></span>
+                </div>
+            </div>
+            <div style="font-size:22px">🃏</div>
+        </div>
+        <div class="memory-grid" id="memory-grid">
+            </div>
     </div>
 
     <div id="quiz-screen">
@@ -305,7 +338,7 @@
             </div>
             <div style="font-size:22px">🕹️</div>
         </div>
-        <div class="illustration-area"><div class="illustration-box" id="q-emoji">🥟</div></div>
+        <div class="illustration-area"><div class="illustration-box" id="q-emoji"></div></div>
         <div class="cards-area">
             <div class="card-question" id="card-question"></div>
             <div class="card-pinyin" id="card-pinyin"></div>
@@ -325,21 +358,6 @@
         <div class="passage-body" id="passage-body"></div>
     </div>
 
-    <div id="memory-screen">
-        <div class="game-header" style="border-bottom: 2px solid rgba(255,149,0,0.15);">
-            <button class="back-btn" style="background:#FFECD6;color:#D67200;" onclick="goToMap()">←</button>
-            <div class="header-wrap">
-                <div class="m-progress-label">
-                    <span>尋找食物配對！</span>
-                    <span>步數: <span class="m-moves" id="m-moves-count">0</span></span>
-                </div>
-            </div>
-            <div style="font-size:22px">🃏</div>
-        </div>
-        <div class="memory-grid" id="memory-grid">
-            </div>
-    </div>
-
     <div id="level-clear">
         <div class="clear-emoji" id="clear-emoji">🎉</div>
         <div class="clear-stars" id="clear-stars">⭐⭐⭐</div>
@@ -353,43 +371,41 @@
 
     <div id="end-screen">
         <div class="end-emoji">🏆</div>
-        <h1>MISSION CLEAR!</h1>
-        <p>太棒了！你已完成所有任務！<br>你的中文真的非常厲害！</p>
-        <button class="start-btn" style="background:var(--orange); box-shadow:0 6px 0 #C84B31; margin-top:10px;" onclick="resetAll()">PLAY AGAIN 🔄</button>
+        <h1>恭喜！全部通關！</h1>
+        <p>你已完成所有關卡，<br>中文真的很厲害！</p>
+        <button id="restart-btn" onclick="resetAll()">重新挑戰 🔄</button>
     </div>
 </div>
 
 <script>
-// 統一處理泡菜 Emoji 的替換邏輯
-function getPaochaiEmoji() {
-    return `<img src="image_66fec7.png" class="paochai-icon-img" alt="🥬">`;
-}
+// 使用使用者上傳的泡菜圖片 (請確保檔名為 image_66fec7.png)
+const imgPaochai = '<img src="image_66fec7.png" class="paochai-icon-img" alt="泡菜">';
 
-// --- STAGE 1 DATA ---
+// --- STAGE 1 DATA (Memory) ---
+const MEMORY_PAIRS = [
+    { id: 1, text: "餃子", emoji: "🥟" },
+    { id: 2, text: "泡菜", emoji: imgPaochai }, 
+    { id: 3, text: "春捲", emoji: "🌯" },
+    { id: 4, text: "壽司", emoji: "🍣" },
+    { id: 5, text: "辣椒", emoji: "🌶️" },
+    { id: 6, text: "鹽巴", emoji: "🧂" }
+];
+
+// --- STAGE 2 DATA (Quiz) ---
 const QUIZ_QUESTIONS = [
     { emoji:"🥟", part1:"他們去張老師家", part2:"餃子。", answer:"包", options:[{hanzi:"包",pinyin:"bāo"},{hanzi:"洗",pinyin:"xǐ"},{hanzi:"煮",pinyin:"zhǔ"},{hanzi:"脫",pinyin:"tuō"}] },
     { emoji:"🥗", part1:"張老師已經把", part2:"跟餃子皮都準備好了。", answer:"餡兒", options:[{hanzi:"材料",pinyin:"cáiliào"},{hanzi:"餡兒",pinyin:"xiànr"},{hanzi:"鍋子",pinyin:"guōzi"},{hanzi:"碗",pinyin:"wǎn"}] },
     { emoji:"🍳", part1:"先把大白菜", part2:"乾淨，加鹽拌一拌。", answer:"洗", options:[{hanzi:"做",pinyin:"zuò"},{hanzi:"包",pinyin:"bāo"},{hanzi:"洗",pinyin:"xǐ"},{hanzi:"煮",pinyin:"zhǔ"}] },
     { emoji:"🍜", part1:"水開了以後，把餃子放進去", part2:"十分鐘。", answer:"煮", options:[{hanzi:"煮",pinyin:"zhǔ"},{hanzi:"包",pinyin:"bāo"},{hanzi:"切",pinyin:"qiē"},{hanzi:"拌",pinyin:"bàn"}] },
-    { emoji: getPaochaiEmoji(), part1:"大家嚐了泡菜都說", part2:"李東健會做泡菜。", answer:"看不出來", options:[{hanzi:"看不出來",pinyin:"kàn bù chūlái"},{hanzi:"吃不下去",pinyin:"chī bù xiàqù"},{hanzi:"做不出來",pinyin:"zuò bù chūlái"},{hanzi:"買不到",pinyin:"mǎi bú dào"}] },
+    { emoji: imgPaochai, part1:"大家嚐了泡菜都說", part2:"李東健會做泡菜。", answer:"看不出來", options:[{hanzi:"看不出來",pinyin:"kàn bù chūlái"},{hanzi:"吃不下去",pinyin:"chī bù xiàqù"},{hanzi:"做不出來",pinyin:"zuò bù chūlái"},{hanzi:"買不到",pinyin:"mǎi bú dào"}] },
     { emoji:"🎉", part1:"同學們都覺得這個學期", part2:"，學到了很多。", answer:"過得很充實", options:[{hanzi:"過得很充實",pinyin:"guò de hěn chōngshí"},{hanzi:"作業太多",pinyin:"zuòyè tài duō"},{hanzi:"假期太短",pinyin:"jiàqī tài duǎn"},{hanzi:"考試很難",pinyin:"kǎoshì hěn nán"}] }
 ];
 
-// --- STAGE 2 DATA ---
+// --- STAGE 3 DATA (Passage) ---
 const PASSAGE_DATA = [
     { sectionLabel:"第一段", emoji:"🥟", passage:"這個學期，馬丁、陳月美、高美玲和李東健都是張老師的學生，他們趁學期結束以前的一個週末，到張老師家包餃子。張老師已經把餃子餡兒跟餃子皮都準備好了。到了老師家以後，張老師就教他們怎麼包餃子，怎麼把餃子包得好看，怎麼包不容易煮破。", questions:[ {q:"這個學期，張老師的學生有哪些人？",ref:"馬丁、陳月美、高美玲和李東健。"}, {q:"他們趁學期結束以前的週末做什麼？",ref:"他們去張老師家包餃子。"}, {q:"到了老師家以後，張老師教他們什麼？",ref:"①怎麼包餃子 ②怎麼包得好看 ③怎麼包不容易破。"} ]},
-    { sectionLabel:"第二段", emoji: getPaochaiEmoji(), passage:"除了包餃子，李東健跟陳月美還帶了自己做的韓國泡菜和越南春捲請大家吃。大家嚐了泡菜都說看不出來李東健會做泡菜。李東健說他是跟媽媽學的，做起來不太難。先把大白菜洗乾淨，加鹽拌一拌，再放辣椒和調味料，最後裝進玻璃或是塑膠罐裡，放一下就可以吃了。", questions:[ {q:"為什麼大家看不出來東健會做泡菜？",ref:"因為泡菜是韓國食物，大家沒想到外國留學生會做。"}, {q:"東健的媽媽覺得泡菜要怎麼做？",ref:"①大白菜洗乾淨 ②加鹽拌 ③放辣椒和調味料 ④裝進罐子裡放一下。"} ]},
+    { sectionLabel:"第二段", emoji: imgPaochai, passage:"除了包餃子，李東健跟陳月美還帶了自己做的韓國泡菜和越南春捲請大家吃。大家嚐了泡菜都說看不出來李東健會做泡菜。李東健說他是跟媽媽學的，做起來不太難。先把大白菜洗乾淨，加鹽拌一拌，再放辣椒和調味料，最後裝進玻璃或是塑膠罐裡，放一下就可以吃了。", questions:[ {q:"為什麼大家看不出來東健會做泡菜？",ref:"因為泡菜是韓國食物，大家沒想到外國留學生會做。"}, {q:"東健的媽媽覺得泡菜要怎麼做？",ref:"①大白菜洗乾淨 ②加鹽拌 ③放辣椒和調味料 ④裝進罐子裡放一下。"} ]}, 
     { sectionLabel:"第三段", emoji:"🍱", passage:"張老師也說，像中國的餃子、韓國的泡菜，或是越南的春捲、日本的壽司，材料很容易買得到，做起來也不難，都是大家常吃的食物。", questions:[ {q:"這些食物的材料在台灣買得到嗎？",ref:"買得到，材料很容易買得到。"}, {q:"張老師覺得大家常吃哪些食物？",ref:"餃子、泡菜、春捲、壽司都是大家常吃的食物。"} ]}
-];
-
-// --- STAGE 3 DATA ---
-const MEMORY_PAIRS = [
-    { id: 1, text: "餃子", emoji: "🥟" },
-    { id: 2, text: "泡菜", emoji: getPaochaiEmoji() },
-    { id: 3, text: "春捲", emoji: "🌯" },
-    { id: 4, text: "壽司", emoji: "🍣" },
-    { id: 5, text: "辣椒", emoji: "🌶️" },
-    { id: 6, text: "鹽巴", emoji: "🧂" }
 ];
 
 // --- GLOBAL STATE ---
@@ -398,14 +414,14 @@ let levelCleared  = [false, false, false];
 let currentLevel  = 0;
 let applesCollected = 0;
 
+let memoryMoves = 0; let flippedCards = []; let matchedPairs = 0; let isBoardLocked = false;
 let currentQIndex = 0; let playerHP = 3; let currentCombo = 0;
 let currentSection = 0;
-let memoryMoves = 0; let flippedCards = []; let matchedPairs = 0; let isBoardLocked = false;
 
 function showOnly(targetId) {
-    const screenIds = ['map-screen', 'level-intro', 'quiz-screen', 'passage-screen', 'memory-screen', 'level-clear', 'end-screen'];
+    const screenIds = ['map-screen', 'level-intro', 'memory-screen', 'quiz-screen', 'passage-screen', 'level-clear', 'end-screen'];
     screenIds.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-    const targetMap = { 'map': 'map-screen', 'intro': 'level-intro', 'quiz': 'quiz-screen', 'passage': 'passage-screen', 'memory': 'memory-screen', 'clear': 'level-clear', 'end': 'end-screen' };
+    const targetMap = { 'map': 'map-screen', 'intro': 'level-intro', 'memory': 'memory-screen', 'quiz': 'quiz-screen', 'passage': 'passage-screen', 'clear': 'level-clear', 'end': 'end-screen' };
     const currentEl = document.getElementById(targetMap[targetId]);
     if (currentEl) {
         currentEl.style.display = 'flex';
@@ -419,7 +435,6 @@ function renderMap() {
     document.getElementById('score-apples').textContent = applesCollected;
     document.getElementById('score-trophy').textContent = levelCleared.filter(Boolean).length;
     
-    // Update Map Buttons
     for(let i=0; i<3; i++) {
         const btn = document.getElementById(`btn-lv${i}`);
         if(!btn) continue;
@@ -445,22 +460,14 @@ function startLevelIntro(idx) {
     if (!levelProgress[idx]) return;
     currentLevel = idx;
     const configs = [
-        { badge:'STAGE 1 · 生詞填空', bg:'#1A73E8', emoji:'🕹️', title:'生詞填空', desc:'保護你的 3 顆愛心！選出正確的生詞，不要被扣血啦！', tip:'💡 連續答對可以獲得 COMBO 加成喔！', tipBg:'#E8F0FE', tipColor:'#1A73E8', btnBg:'var(--btn-blue)' },
-        { badge:'STAGE 2 · 段落問答', bg:'#6B4FBB', emoji:'📖', title:'段落問答', desc:'閱讀三段短文，用中文簡答每個問題！', tip:'💡 讀完段落後，用自己的話回答，答完再看參考答案', tipBg:'#EDE8FF', tipColor:'#6B4FBB', btnBg:'var(--lv2-color)' },
-        { badge:'STAGE 3 · 記憶翻牌', bg:'#FF9500', emoji:'🃏', title:'食物配對', desc:'翻開卡片，找出「中文單字」與對應的「食物圖案」！', tip:'💡 翻牌步數越少，過關的星星越多喔！', tipBg:'#FFECD6', tipColor:'#D67200', btnBg:'var(--lv3-color)' }
+        { badge:'STAGE 1 · 記憶翻牌', bg:'#FF9500', emoji:'🃏', title:'食物配對', desc:'翻開卡片，找出「中文單字」與對應的「食物圖案」！', tip:'💡 翻牌步數越少，過關的星星越多喔！', tipBg:'#FFECD6', tipColor:'#D67200', btnBg:'linear-gradient(135deg, var(--orange), var(--yellow))' },
+        { badge:'STAGE 2 · 生詞填空', bg:'#1A73E8', emoji:'🕹️', title:'生詞填空', desc:'保護你的 3 顆愛心！選出正確的生詞，不要被扣血啦！', tip:'💡 連續答對可以獲得 COMBO 加成喔！', tipBg:'#E8F0FE', tipColor:'#1A73E8', btnBg:'linear-gradient(135deg, var(--btn-blue), #4A9CF8)' },
+        { badge:'STAGE 3 · 段落問答', bg:'#6B4FBB', emoji:'📖', title:'段落問答', desc:'閱讀三段短文，用中文簡答每個問題！', tip:'💡 讀完段落後，用自己的話回答，答完再看參考答案', tipBg:'#EDE8FF', tipColor:'#6B4FBB', btnBg:'linear-gradient(135deg, var(--lv2-color), #9B7FEB)' }
     ];
     const c = configs[idx];
     document.getElementById('intro-badge').textContent = c.badge;
     document.getElementById('intro-badge').style.background = c.bg;
-    
-    // 檢查 emoji 內容決定使用 textContent 或 innerHTML
-    const emojiEl = document.getElementById('intro-emoji');
-    if (typeof c.emoji === 'string' && c.emoji.startsWith('<img')) {
-        emojiEl.innerHTML = c.emoji;
-    } else {
-        emojiEl.textContent = c.emoji;
-    }
-    
+    document.getElementById('intro-emoji').innerHTML = c.emoji;
     document.getElementById('intro-title').textContent = c.title;
     document.getElementById('intro-desc').textContent = c.desc;
     document.getElementById('intro-tip').textContent = c.tip;
@@ -468,129 +475,21 @@ function startLevelIntro(idx) {
     document.getElementById('intro-tip').style.color = c.tipColor;
     document.getElementById('intro-start-btn').style.background = c.btnBg;
     
-    let shadowColor = '#1557B0';
-    if(idx===1) shadowColor = '#503A8A';
-    if(idx===2) shadowColor = '#D67200';
+    let shadowColor = 'var(--yellow-dark)'; 
+    if(idx===1) shadowColor = 'var(--btn-blue-dark)';
+    if(idx===2) shadowColor = '#503A8A';
     document.getElementById('intro-start-btn').style.boxShadow = `0 6px 0 ${shadowColor}`;
     
     showOnly('intro');
 }
 
 function beginLevel() {
-    if (currentLevel === 0) beginQuiz();
-    else if (currentLevel === 1) beginPassage();
-    else if (currentLevel === 2) beginMemoryGame();
+    if (currentLevel === 0) beginMemoryGame();
+    else if (currentLevel === 1) beginQuiz();
+    else if (currentLevel === 2) beginPassage();
 }
 
-// ════ STAGE 1 LOGIC ════
-function beginQuiz() {
-    currentQIndex = 0; playerHP = 3; currentCombo = 0;
-    updateHPDisplay();
-    document.getElementById('progress-fill').style.background = '#1A73E8';
-    document.getElementById('quiz-back-btn').style.background = '#E8F0FE';
-    document.getElementById('quiz-back-btn').style.color = '#1A73E8';
-    document.getElementById('quiz-label-wrap').style.color = '#1A73E8';
-    document.getElementById('card-question').style.borderColor = '#1A73E8';
-    showOnly('quiz');
-    loadQuestion();
-}
-
-function updateHPDisplay() {
-    document.getElementById('hp-display').textContent = '❤️'.repeat(playerHP) + '🖤'.repeat(3 - playerHP);
-}
-
-function triggerCombo() {
-    if (currentCombo < 2) return;
-    const comboEl = document.getElementById('combo-text');
-    comboEl.textContent = `${currentCombo} COMBO!`;
-    comboEl.classList.remove('show');
-    void comboEl.offsetWidth; 
-    comboEl.classList.add('show');
-}
-
-function loadQuestion() {
-    const q = QUIZ_QUESTIONS[currentQIndex];
-    const total = QUIZ_QUESTIONS.length;
-    document.getElementById('progress-text').textContent = `第 ${currentQIndex+1} / ${total} 題`;
-    document.getElementById('progress-fill').style.width = `${(currentQIndex/total)*100}%`;
-    
-    // 檢查 emoji 內容決定使用 textContent 或 innerHTML
-    const emojiEl = document.getElementById('q-emoji');
-    if (typeof q.emoji === 'string' && q.emoji.startsWith('<img')) {
-        emojiEl.innerHTML = q.emoji;
-    } else {
-        emojiEl.textContent = q.emoji;
-    }
-    
-    document.getElementById('card-question').innerHTML = `${q.part1}<span class="blank-underline" id="blank">　　</span>${q.part2}`;
-    const correct = q.options.find(o => o.hanzi === q.answer);
-    document.getElementById('card-pinyin').textContent = `提示拼音：${correct ? correct.pinyin : ''}`;
-    const container = document.getElementById('options-container');
-    container.innerHTML = '';
-    [...q.options].sort(() => Math.random() - 0.5).forEach(opt => {
-        const btn = document.createElement('div');
-        btn.className = 'option-btn';
-        btn.innerHTML = `<div class="option-hanzi">${opt.hanzi}</div><div class="option-pinyin">${opt.pinyin}</div>`;
-        btn.addEventListener('click', () => checkAnswer(btn, opt.hanzi, q.answer));
-        container.appendChild(btn);
-    });
-}
-
-function checkAnswer(clickedBtn, selected, correct) {
-    if (selected === correct) {
-        clickedBtn.classList.add('correct');
-        document.getElementById('blank').textContent = correct;
-        document.getElementById('blank').classList.add('filled');
-        document.querySelectorAll('.option-btn').forEach(b => b.classList.add('disabled'));
-        document.getElementById('progress-fill').style.width = `${((currentQIndex+1)/QUIZ_QUESTIONS.length)*100}%`;
-        
-        applesCollected++; 
-        currentCombo++; triggerCombo();
-
-        setTimeout(() => { 
-            currentQIndex++; 
-            if(currentQIndex < QUIZ_QUESTIONS.length) loadQuestion(); 
-            else showLevelClear(true); 
-        }, 1000);
-    } else {
-        clickedBtn.classList.add('wrong');
-        currentCombo = 0; playerHP--; updateHPDisplay();
-        if (playerHP <= 0) {
-            document.querySelectorAll('.option-btn').forEach(b => b.classList.add('disabled'));
-            setTimeout(() => showGameOver(), 800);
-        }
-    }
-}
-
-// ════ STAGE 2 LOGIC ════
-function beginPassage() { currentSection = 0; showOnly('passage'); renderSection(); }
-
-function renderSection() {
-    const sec = PASSAGE_DATA[currentSection]; const total = PASSAGE_DATA.length; const isLast = currentSection === total - 1;
-    document.getElementById('p-progress-label').textContent = `${sec.sectionLabel} · 共 ${total} 段`;
-    document.getElementById('p-progress-fill').style.width = `${((currentSection+1)/total)*100}%`;
-    const body = document.getElementById('passage-body'); body.innerHTML = '';
-    body.appendChild(Object.assign(document.createElement('div'), {innerHTML:`<div class="section-label"><div class="section-dot"></div>${sec.emoji} ${sec.sectionLabel}</div>`}));
-    body.appendChild(Object.assign(document.createElement('div'), {className:'passage-card', textContent:sec.passage}));
-    body.appendChild(Object.assign(document.createElement('div'), {innerHTML:`<div class="section-label" style="margin-top:2px"><div class="section-dot"></div>📝 回答問題</div>`}));
-    const qBlock = document.createElement('div'); qBlock.className = 'questions-block';
-    sec.questions.forEach((item, i) => {
-        qBlock.appendChild(Object.assign(document.createElement('div'), {className:'question-item', innerHTML:`<div class="question-num-row"><div class="q-num">${i+1}</div><div class="q-text">${item.q}</div></div><textarea class="answer-input" id="ans-${i}" placeholder="請用中文回答…" oninput="this.classList.toggle('answered',this.value.trim().length>0)"></textarea><div class="ref-answer" id="ref-${i}"><b>✦ 參考答案</b><br>${item.ref}</div>`}));
-    });
-    body.appendChild(qBlock);
-    const submitBtn = document.createElement('button'); submitBtn.className = 'submit-section-btn'; submitBtn.textContent = '對答案，看參考答案 ✦';
-    const nextBtn = document.createElement('button'); nextBtn.className = 'next-section-btn'; nextBtn.textContent = isLast ? '完成篇章任務 🎉' : `繼續 ${PASSAGE_DATA[currentSection+1].sectionLabel} →`;
-    submitBtn.onclick = () => {
-        for (let i = 0; i < sec.questions.length; i++) document.getElementById('ref-'+i).classList.add('show');
-        submitBtn.style.display = 'none'; nextBtn.style.display = 'block';
-        setTimeout(() => document.getElementById('ref-0').scrollIntoView({behavior:'smooth',block:'center'}), 100);
-    };
-    nextBtn.onclick = () => { if (isLast) showLevelClear(true); else { currentSection++; document.getElementById('passage-screen').scrollTop=0; renderSection(); } };
-    body.appendChild(submitBtn); body.appendChild(nextBtn);
-    document.getElementById('passage-screen').scrollTop = 0;
-}
-
-// ════ STAGE 3 LOGIC ════
+// ════ STAGE 1 LOGIC (Memory) ════
 function beginMemoryGame() {
     memoryMoves = 0; matchedPairs = 0; flippedCards = []; isBoardLocked = false;
     document.getElementById('m-moves-count').textContent = memoryMoves;
@@ -599,14 +498,12 @@ function beginMemoryGame() {
     const grid = document.getElementById('memory-grid');
     grid.innerHTML = '';
     
-    // Generate 12 cards (6 text, 6 emoji/image)
     let cardsData = [];
     MEMORY_PAIRS.forEach(pair => {
         cardsData.push({ id: pair.id, type: 'text', content: pair.text });
-        cardsData.push({ id: pair.id, type: 'emoji', content: pair.emoji }); // 可能包含圖片 HTML
+        cardsData.push({ id: pair.id, type: 'emoji', content: pair.emoji });
     });
     
-    // Shuffle
     cardsData.sort(() => Math.random() - 0.5);
     
     cardsData.forEach((data, index) => {
@@ -647,15 +544,12 @@ function checkForMatch() {
     const card1 = flippedCards[0];
     const card2 = flippedCards[1];
     
-    const isMatch = card1.dataset.id === card2.dataset.id;
-    
-    if (isMatch) {
+    if (card1.dataset.id === card2.dataset.id) {
         matchedPairs++;
         card1.classList.add('matched');
         card2.classList.add('matched');
         flippedCards = [];
-        
-        applesCollected += 2; // Bonus apples for matching
+        applesCollected += 2; 
         
         if (matchedPairs === MEMORY_PAIRS.length) {
             setTimeout(() => showLevelClear(true), 600);
@@ -671,7 +565,107 @@ function checkForMatch() {
     }
 }
 
-// ════ COMMON CLEAR / OVER LOGIC ════
+// ════ STAGE 2 LOGIC (Quiz) ════
+function beginQuiz() {
+    currentQIndex = 0; playerHP = 3; currentCombo = 0;
+    updateHPDisplay();
+    document.getElementById('progress-fill').style.background = '#1A73E8';
+    document.getElementById('quiz-back-btn').style.background = '#E8F0FE';
+    document.getElementById('quiz-back-btn').style.color = '#1A73E8';
+    document.getElementById('quiz-label-wrap').style.color = '#1A73E8';
+    document.getElementById('card-question').style.borderColor = '#1A73E8';
+    showOnly('quiz');
+    loadQuestion();
+}
+
+function updateHPDisplay() {
+    document.getElementById('hp-display').textContent = '❤️'.repeat(playerHP) + '🖤'.repeat(3 - playerHP);
+}
+
+function triggerCombo() {
+    if (currentCombo < 2) return;
+    const comboEl = document.getElementById('combo-text');
+    comboEl.textContent = `${currentCombo} COMBO!`;
+    comboEl.classList.remove('show');
+    void comboEl.offsetWidth; 
+    comboEl.classList.add('show');
+}
+
+function loadQuestion() {
+    const q = QUIZ_QUESTIONS[currentQIndex];
+    const total = QUIZ_QUESTIONS.length;
+    document.getElementById('progress-text').textContent = `第 ${currentQIndex+1} / ${total} 題`;
+    document.getElementById('progress-fill').style.width = `${(currentQIndex/total)*100}%`;
+    document.getElementById('q-emoji').innerHTML = q.emoji;
+    document.getElementById('card-question').innerHTML = `${q.part1}<span class="blank-underline" id="blank">　　</span>${q.part2}`;
+    const correct = q.options.find(o => o.hanzi === q.answer);
+    document.getElementById('card-pinyin').textContent = `提示拼音：${correct ? correct.pinyin : ''}`;
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    [...q.options].sort(() => Math.random() - 0.5).forEach(opt => {
+        const btn = document.createElement('div');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<div class="option-hanzi">${opt.hanzi}</div><div class="option-pinyin">${opt.pinyin}</div>`;
+        btn.addEventListener('click', () => checkAnswer(btn, opt.hanzi, q.answer));
+        container.appendChild(btn);
+    });
+}
+
+function checkAnswer(clickedBtn, selected, correct) {
+    if (selected === correct) {
+        clickedBtn.classList.add('correct');
+        document.getElementById('blank').textContent = correct;
+        document.getElementById('blank').classList.add('filled');
+        document.querySelectorAll('.option-btn').forEach(b => b.classList.add('disabled'));
+        document.getElementById('progress-fill').style.width = `${((currentQIndex+1)/QUIZ_QUESTIONS.length)*100}%`;
+        
+        applesCollected++; 
+        currentCombo++; triggerCombo();
+
+        setTimeout(() => { 
+            currentQIndex++; 
+            if(currentQIndex < QUIZ_QUESTIONS.length) loadQuestion(); 
+            else showLevelClear(true); 
+        }, 1000);
+    } else {
+        clickedBtn.classList.add('wrong');
+        currentCombo = 0; playerHP--; updateHPDisplay();
+        if (playerHP <= 0) {
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.add('disabled'));
+            setTimeout(() => showGameOver(), 800);
+        }
+    }
+}
+
+// ════ STAGE 3 LOGIC (Passage) ════
+function beginPassage() { currentSection = 0; showOnly('passage'); renderSection(); }
+
+function renderSection() {
+    const sec = PASSAGE_DATA[currentSection]; const total = PASSAGE_DATA.length; const isLast = currentSection === total - 1;
+    document.getElementById('p-progress-label').textContent = `${sec.sectionLabel} · 共 ${total} 段`;
+    document.getElementById('p-progress-fill').style.width = `${((currentSection+1)/total)*100}%`;
+    const body = document.getElementById('passage-body'); body.innerHTML = '';
+    body.appendChild(Object.assign(document.createElement('div'), {innerHTML:`<div class="section-label"><div class="section-dot"></div>${sec.emoji} ${sec.sectionLabel}</div>`}));
+    body.appendChild(Object.assign(document.createElement('div'), {className:'passage-card', textContent:sec.passage}));
+    body.appendChild(Object.assign(document.createElement('div'), {innerHTML:`<div class="section-label" style="margin-top:2px"><div class="section-dot"></div>📝 回答問題</div>`}));
+    const qBlock = document.createElement('div'); qBlock.className = 'questions-block';
+    sec.questions.forEach((item, i) => {
+        qBlock.appendChild(Object.assign(document.createElement('div'), {className:'question-item', innerHTML:`<div class="question-num-row"><div class="q-num">${i+1}</div><div class="q-text">${item.q}</div></div><textarea class="answer-input" id="ans-${i}" placeholder="請用中文回答…" oninput="this.classList.toggle('answered',this.value.trim().length>0)"></textarea><div class="ref-answer" id="ref-${i}"><div class="ref-label">✦ 參考答案</div>${item.ref}</div>`}));
+    });
+    body.appendChild(qBlock);
+    const submitBtn = document.createElement('button'); submitBtn.className = 'submit-section-btn'; submitBtn.textContent = '對答案，看參考答案 ✦';
+    const nextBtn = document.createElement('button'); nextBtn.className = 'next-section-btn'; nextBtn.textContent = isLast ? '完成篇章任務 🎉' : `繼續 ${PASSAGE_DATA[currentSection+1].sectionLabel} →`;
+    submitBtn.onclick = () => {
+        for (let i = 0; i < sec.questions.length; i++) document.getElementById('ref-'+i).classList.add('show');
+        submitBtn.style.display = 'none'; nextBtn.style.display = 'block';
+        setTimeout(() => document.getElementById('ref-0').scrollIntoView({behavior:'smooth',block:'center'}), 100);
+    };
+    nextBtn.onclick = () => { if (isLast) showLevelClear(true); else { currentSection++; document.getElementById('passage-screen').scrollTop=0; renderSection(); } };
+    body.appendChild(submitBtn); body.appendChild(nextBtn);
+    document.getElementById('passage-screen').scrollTop = 0;
+}
+
+// ════ COMMON LOGIC ════
 function showGameOver() {
     document.getElementById('clear-emoji').textContent = '💀';
     document.getElementById('clear-stars').textContent = '愛心耗盡了';
@@ -690,38 +684,52 @@ function showGameOver() {
 function showLevelClear(isSuccess) {
     if(!isSuccess) return;
     levelCleared[currentLevel] = true;
-    if (currentLevel + 1 < 3) levelProgress[currentLevel+1] = true; // Unlock next level
+    if (currentLevel + 1 < 3) levelProgress[currentLevel+1] = true; 
     
-    const isLast = currentLevel === 2; // Level 3 is the last
+    const isLast = currentLevel === 2; 
     document.getElementById('clear-title').classList.remove('game-over-title');
     document.getElementById('clear-emoji').textContent = isLast ? '🏆' : '🎉';
     
-    // Star Logic
     let stars = '⭐⭐⭐';
-    if(currentLevel === 0) { // Stage 1 based on HP
-        if(playerHP === 2) stars = '⭐⭐';
-        if(playerHP === 1) stars = '⭐';
-    } else if (currentLevel === 2) { // Stage 3 based on Moves
+    if(currentLevel === 0) { 
         if(memoryMoves > 12 && memoryMoves <= 16) stars = '⭐⭐';
         else if(memoryMoves > 16) stars = '⭐';
+    } else if (currentLevel === 1) { 
+        if(playerHP === 2) stars = '⭐⭐';
+        if(playerHP === 1) stars = '⭐';
     }
     document.getElementById('clear-stars').textContent = stars;
     
-    document.getElementById('clear-title').textContent = 'STAGE CLEAR!';
+    let titleText = '';
+    if (currentLevel === 0) titleText = '記憶翻牌 通關！';
+    else if (currentLevel === 1) titleText = '生詞填空 通關！';
+    else if (currentLevel === 2) titleText = '段落問答 通關！';
+
+    document.getElementById('clear-title').textContent = titleText;
     document.getElementById('clear-sub').textContent = isLast ? '恭喜！你已完成所有任務！' : '新關卡已解鎖！';
     
     const btnNext = document.getElementById('btn-next');
-    btnNext.textContent = isLast ? '查看成果 🏆' : 'NEXT STAGE →';
     
-    // Button styling based on next level
-    let nextBg = 'var(--orange)'; let nextShadow = '#C84B31';
-    if (!isLast) {
-        if(currentLevel === 0) { nextBg = 'var(--lv2-color)'; nextShadow = '#503A8A'; } // To Stage 2
-        else if(currentLevel === 1) { nextBg = 'var(--lv3-color)'; nextShadow = '#D67200'; } // To Stage 3
+    let nextBg = 'linear-gradient(135deg, var(--orange), var(--yellow))'; 
+    let nextShadow = 'var(--yellow-dark)';
+    
+    if (isLast) {
+        btnNext.textContent = '查看成果 🏆';
+    } else {
+        if(currentLevel === 0) { 
+            btnNext.textContent = '下一關：生詞填空 →';
+            nextBg = 'linear-gradient(135deg, var(--btn-blue), #4A9CF8)'; 
+            nextShadow = 'var(--btn-blue-dark)'; 
+        } 
+        else if(currentLevel === 1) { 
+            btnNext.textContent = '下一關：段落問答 →';
+            nextBg = 'linear-gradient(135deg, var(--lv2-color), #9B7FEB)'; 
+            nextShadow = '#503A8A'; 
+        } 
     }
     
     btnNext.style.background = nextBg;
-    btnNext.style.boxShadow = `0 6px 0 ${nextShadow}`;
+    btnNext.style.boxShadow = `0 4px 0 ${nextShadow}`;
     btnNext.onclick = goNextLevel;
     
     showOnly('clear');
@@ -742,7 +750,6 @@ function resetAll() {
     renderMap(); 
 }
 
-// 確保網頁讀取後綁定
 document.addEventListener('DOMContentLoaded', () => {
     renderMap();
 });
